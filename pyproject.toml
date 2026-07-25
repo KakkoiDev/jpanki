@@ -1,0 +1,30 @@
+[project]
+name = "jpanki"
+version = "0.1.0"
+description = "Shared mechanics for generating Japanese-language Anki decks"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "genanki>=0.13.1",
+]
+
+[project.optional-dependencies]
+# Text-to-speech generation. Volume normalisation and MP3 merging additionally
+# shell out to `ffmpeg`, which is not pip-installable.
+audio = ["edge-tts>=6.1.0"]
+# UniDic-backed reading verification, used by consumers that check furigana
+# against a morphological analyser rather than trusting the CSV.
+morphology = ["fugashi>=1.3.0", "unidic-lite>=1.0.8"]
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/jpanki"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
