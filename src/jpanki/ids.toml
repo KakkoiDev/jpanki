@@ -60,3 +60,11 @@ previous_deck_base_id = 2261602312
 model_ids = [1910695637]
 deck_base_id = 2463804514
 reserved = 200
+
+[fudosan]
+# 不動産・住宅購入 — buying land and a house in Japan. One model, 12 tier
+# subdecks. Its base sits in the gap below `it-kundoku` rather than above
+# `bible`; the registry checks ranges, not ordering, and the gap is wide.
+model_ids = [1904773261]
+deck_base_id = 2088314597
+reserved = 200
