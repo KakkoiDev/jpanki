@@ -68,3 +68,8 @@ reserved = 200
 model_ids = [1904773261]
 deck_base_id = 2088314597
 reserved = 200
+
+[agentic-lab]
+model_ids = [2011796738]
+deck_base_id = 2564905615
+reserved = 200
