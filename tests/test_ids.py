@@ -105,6 +105,25 @@ def test_minihongo_keeps_its_published_model_ids():
     }
 
 
+def test_agentic_lab_keeps_the_ids_it_shipped_with():
+    """agentic-lab shipped from nihongo-it-anki before it was registered here."""
+    reg = ids.for_deck("agentic-lab")
+    assert reg.model_id == 2011796738
+    assert reg.deck_base_id == 2564905615
+    assert reg.reserved == 200
+    claimed = set(reg.deck_id_range)
+    for other in ids.load().values():
+        if other.slug == reg.slug:
+            continue
+        assert not claimed & set(other.deck_id_range)
+        if other.previous_deck_base_id is not None:
+            previous = range(
+                other.previous_deck_base_id,
+                other.previous_deck_base_id + other.reserved + 1,
+            )
+            assert not claimed & set(previous)
+
+
 @pytest.mark.parametrize(
     "slug,model_id",
     [("it-vocab", 1607392323), ("it-kundoku", 1708493424), ("accounting", 1809594535),
