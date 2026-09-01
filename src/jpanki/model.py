@@ -77,14 +77,39 @@ def build_deck(deck_id: int, name: str) -> genanki.Deck:
     return genanki.Deck(deck_id, name)
 
 
-def subdeck(parent: str, position: int, label: str, *, width: int = 2) -> str:
+def subdeck(
+    parent: str,
+    position: int,
+    label: str,
+    *,
+    total: int | None = None,
+    width: int | None = None,
+) -> str:
     """Build a ``Parent::NN Label`` subdeck name.
 
     Anki sorts the deck sidebar lexically, with no way to specify an order, so
     both projects independently arrived at zero-padded numeric prefixes to make
-    the sidebar follow curriculum order. ``width=2`` handles up to 99 subdecks;
-    past that the padding must widen or ``10`` sorts before ``9``.
+    the sidebar follow curriculum order. The width is at least two digits and,
+    when ``total`` is supplied, grows automatically with the collection:
+    1-99 subdecks use ``01`` and 100-999 use ``001``.
+
+    ``width`` remains available for callers with a fixed external naming
+    contract. New collection builders should pass ``total`` instead.
     """
+    if position < 1:
+        raise ValueError("subdeck position must be positive")
+    if total is not None:
+        if total < 1:
+            raise ValueError("subdeck total must be positive")
+        if position > total:
+            raise ValueError(f"position {position} exceeds total {total}")
+        automatic_width = max(2, len(str(total)))
+        if width is not None and width != automatic_width:
+            raise ValueError("pass either total or width, not conflicting values")
+        width = automatic_width
+    elif width is None:
+        width = 2
+
     if position >= 10 ** width:
         raise ValueError(
             f"position {position} needs more than {width} digits, which would "

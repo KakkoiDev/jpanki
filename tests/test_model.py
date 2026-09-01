@@ -76,6 +76,18 @@ def test_subdeck_ordering_is_actually_lexical():
     assert names == sorted(names), "zero-padding must make string sort match numeric"
 
 
+def test_subdeck_width_follows_total_collection_size():
+    assert model.subdeck("D", 3, "x", total=9) == "D::03 x"
+    assert model.subdeck("D", 3, "x", total=99) == "D::03 x"
+    assert model.subdeck("D", 3, "x", total=100) == "D::003 x"
+    assert model.subdeck("D", 100, "x", total=100) == "D::100 x"
+
+
+def test_subdeck_rejects_position_outside_collection():
+    with pytest.raises(ValueError, match="exceeds total"):
+        model.subdeck("D", 10, "x", total=9)
+
+
 def test_subdeck_refuses_to_overflow_its_padding():
     with pytest.raises(ValueError, match="lexical"):
         model.subdeck("D", 100, "x", width=2)
