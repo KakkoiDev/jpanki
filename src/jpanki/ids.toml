@@ -75,3 +75,10 @@ reserved = 200
 model_ids = [2011796738]
 deck_base_id = 2564905615
 reserved = 200
+
+[minihongo-speak]
+# A spoken-production deck built from the minihongo 231-word core set,
+# generated in the nihongo-it-anki repository, tiered by can-do goal.
+model_ids = [2112897839]
+deck_base_id = 2666006716
+reserved = 200
