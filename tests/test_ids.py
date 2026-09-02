@@ -131,3 +131,22 @@ def test_agentic_lab_keeps_the_ids_it_shipped_with():
 )
 def test_nihongo_it_keeps_its_published_model_ids(slug, model_id):
     assert ids.for_deck(slug).model_id == model_id
+
+
+def test_minihongo_speak_keeps_the_ids_it_shipped_with():
+    """nihongo-it-anki builds minihongo-speak from these exact IDs."""
+    reg = ids.for_deck("minihongo-speak")
+    assert reg.model_id == 2112897839
+    assert reg.deck_base_id == 2666006716
+    assert reg.reserved == 200
+    claimed = set(reg.deck_id_range)
+    for other in ids.load().values():
+        if other.slug == reg.slug:
+            continue
+        assert not claimed & set(other.deck_id_range)
+        if other.previous_deck_base_id is not None:
+            previous = range(
+                other.previous_deck_base_id,
+                other.previous_deck_base_id + other.reserved + 1,
+            )
+            assert not claimed & set(previous)
