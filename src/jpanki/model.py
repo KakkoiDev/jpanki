@@ -84,6 +84,8 @@ def subdeck(
     *,
     total: int | None = None,
     width: int | None = None,
+    number_prefix: str = "",
+    separator: str = " ",
 ) -> str:
     """Build a ``Parent::NN Label`` subdeck name.
 
@@ -95,6 +97,10 @@ def subdeck(
 
     ``width`` remains available for callers with a fixed external naming
     contract. New collection builders should pass ``total`` instead.
+
+    ``number_prefix`` and ``separator`` preserve an established public naming
+    scheme while centralising the padding. For example, ``number_prefix="Tier "``
+    and ``separator=" - "`` produces ``Parent::Tier 01 - Label``.
     """
     if position < 1:
         raise ValueError("subdeck position must be positive")
@@ -115,7 +121,10 @@ def subdeck(
             f"position {position} needs more than {width} digits, which would "
             f"break Anki's lexical sidebar ordering; pass a wider `width`"
         )
-    return f"{parent}::{position:0{width}d} {label}"
+    return (
+        f"{parent}::{number_prefix}{position:0{width}d}"
+        f"{separator}{label}"
+    )
 
 
 def note_guid(*key_parts: object) -> str:

@@ -83,6 +83,13 @@ def test_subdeck_width_follows_total_collection_size():
     assert model.subdeck("D", 100, "x", total=100) == "D::100 x"
 
 
+def test_subdeck_preserves_existing_number_label_format():
+    assert model.subdeck(
+        "D", 3, "Creation", total=12,
+        number_prefix="Tier ", separator=" - ",
+    ) == "D::Tier 03 - Creation"
+
+
 def test_subdeck_rejects_position_outside_collection():
     with pytest.raises(ValueError, match="exceeds total"):
         model.subdeck("D", 10, "x", total=9)
