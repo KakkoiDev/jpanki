@@ -15,12 +15,77 @@ break existing download URLs for no benefit.
 from __future__ import annotations
 
 import subprocess
+import json
+import shutil
+import sqlite3
+import tempfile
+import zipfile
 from dataclasses import dataclass
 from pathlib import Path
 
 
 class ReleaseError(RuntimeError):
     """A `gh` invocation failed."""
+
+
+def deck_names(package: Path) -> dict[int, str]:
+    """Read the stable deck ID-to-name mapping from a generated ``.apkg``.
+
+    Release compatibility is about IDs, not list position: Anki may create a
+    second empty deck when an imported package reuses a published ID under a
+    different name. Reading the package makes this check independent of the
+    consumer's config representation.
+    """
+    if not package.exists():
+        raise ReleaseError(f"package missing: {package}")
+
+    with zipfile.ZipFile(package) as archive:
+        if "collection.anki2" not in archive.namelist():
+            raise ReleaseError(
+                f"{package} has no collection.anki2; unsupported Anki package"
+            )
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "collection.anki2"
+            with archive.open("collection.anki2") as source, database.open("wb") as target:
+                shutil.copyfileobj(source, target)
+            with sqlite3.connect(database) as connection:
+                row = connection.execute("select decks from col").fetchone()
+
+    if row is None:
+        raise ReleaseError(f"{package} has no Anki collection metadata")
+    decks = json.loads(row[0])
+    return {int(deck_id): deck["name"] for deck_id, deck in decks.items()}
+
+
+def assert_deck_names_compatible(previous: Path, candidate: Path) -> None:
+    """Reject a release that renames or loses an already-published deck ID.
+
+    New IDs are allowed. Existing IDs must retain their exact names, and old
+    IDs must remain present. This prevents upgrades from producing duplicate
+    empty subdecks while users' cards remain under the old names.
+    """
+    old = deck_names(previous)
+    new = deck_names(candidate)
+    removed = {deck_id: old[deck_id] for deck_id in old.keys() - new.keys()}
+    renamed = {
+        deck_id: (old[deck_id], new[deck_id])
+        for deck_id in old.keys() & new.keys()
+        if old[deck_id] != new[deck_id]
+    }
+    if removed or renamed:
+        details = []
+        details.extend(
+            f"removed ID {deck_id}: {name!r}"
+            for deck_id, name in sorted(removed.items())
+        )
+        details.extend(
+            f"renamed ID {deck_id}: {before!r} -> {after!r}"
+            for deck_id, (before, after) in sorted(renamed.items())
+        )
+        raise ReleaseError(
+            "release would break Anki deck upgrade compatibility: "
+            + "; ".join(details)
+        )
 
 
 def _gh(*args: str, dry_run: bool = False) -> str:
