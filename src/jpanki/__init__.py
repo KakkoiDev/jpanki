@@ -11,7 +11,25 @@ import sys
 import jp_core
 from jp_core import *  # noqa: F403
 
-_MODULES = ("furigana", "ids", "model", "release", "romaji", "theme", "tts", "validate")
+_MODULES = (
+    "agent",
+    "anki",
+    "corpus",
+    "furigana",
+    "guardrails",
+    "ids",
+    "model",
+    "pipeline",
+    "reading",
+    "release",
+    "romaji",
+    "speech",
+    "text",
+    "theme",
+    "tts",
+    "validate",
+    "web",
+)
 
 for _name in _MODULES:
     _module = __import__(f"jp_core.{_name}", fromlist=[_name])
