@@ -1,11 +1,11 @@
 [project]
 name = "jpanki"
-version = "0.1.0"
-description = "Shared mechanics for generating Japanese-language Anki decks"
+version = "0.2.0"
+description = "Compatibility package for JP Core"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "genanki>=0.13.1",
+    "jp-core @ git+https://github.com/KakkoiDev/jp-core.git@daf8833da07d8ed23fa82d1ce406a1266d666c64",
 ]
 
 [project.optional-dependencies]
@@ -22,6 +22,9 @@ dev = ["pytest>=8.0"]
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/jpanki"]

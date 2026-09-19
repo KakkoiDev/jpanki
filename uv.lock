@@ -385,11 +385,19 @@ wheels = [
 ]
 
 [[package]]
-name = "jpanki"
+name = "jp-core"
 version = "0.1.0"
-source = { editable = "." }
+source = { git = "https://github.com/KakkoiDev/jp-core.git?rev=daf8833da07d8ed23fa82d1ce406a1266d666c64#daf8833da07d8ed23fa82d1ce406a1266d666c64" }
 dependencies = [
     { name = "genanki" },
+]
+
+[[package]]
+name = "jpanki"
+version = "0.2.0"
+source = { editable = "." }
+dependencies = [
+    { name = "jp-core" },
 ]
 
 [package.optional-dependencies]
@@ -410,7 +418,7 @@ dev = [
 requires-dist = [
     { name = "edge-tts", marker = "extra == 'audio'", specifier = ">=6.1.0" },
     { name = "fugashi", marker = "extra == 'morphology'", specifier = ">=1.3.0" },
-    { name = "genanki", specifier = ">=0.13.1" },
+    { name = "jp-core", git = "https://github.com/KakkoiDev/jp-core.git?rev=daf8833da07d8ed23fa82d1ce406a1266d666c64" },
     { name = "unidic-lite", marker = "extra == 'morphology'", specifier = ">=1.0.8" },
 ]
 provides-extras = ["audio", "morphology"]

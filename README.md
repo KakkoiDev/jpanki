@@ -1,4 +1,14 @@
-# jpanki
+# jpanki compatibility package
+
+The authoritative implementation has moved to
+[JP Core](https://github.com/KakkoiDev/jp-core). This repository preserves the
+published `jpanki` import paths while existing projects migrate.
+
+New projects should depend on JP Core and use `import jp_core`. Existing code
+can continue to use `import jpanki`; its public modules are aliases of the JP
+Core modules rather than copied implementations.
+
+The remainder of this README documents the inherited API.
 
 Shared mechanics for generating Japanese-language Anki decks.
 
