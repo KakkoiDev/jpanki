@@ -1,11 +1,11 @@
 [project]
 name = "jpanki"
-version = "0.2.0"
+version = "0.3.0"
 description = "Compatibility package for JP Core"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = [
-    "jp-core @ git+https://github.com/KakkoiDev/jp-core.git@daf8833da07d8ed23fa82d1ce406a1266d666c64",
+    "jp-core @ git+https://github.com/KakkoiDev/jp-core.git@211c0b079bbc18925b3ba2976f78c74b15cf1cc7",
 ]
 
 [project.optional-dependencies]
